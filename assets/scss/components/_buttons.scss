@@ -2,9 +2,8 @@
 
 .btn {
   font-size: $btn-font-size;
-  line-height: $btn-line-height;
-  font-family: $type1;
-  font-weight: 500;
+  line-height: 1;
+  font-family: $type1-bold;
   i {
     font-size: 1rem;
   }
@@ -16,8 +15,6 @@
   }
   &.btn-sm {
     font-size: $btn-font-size-sm;
-    padding: $btn-padding-y-sm $btn-padding-x-sm;
-    border-radius: 4px;
   }
   &.btn-lg {
     font-size: $btn-font-size-lg;
@@ -36,10 +33,6 @@
   &.btn-icon-text {
     .btn-icon-prepend {
       margin-right: .5rem;
-      .rtl & {
-        margin-right: 0;
-        margin-left: .5rem;
-      }
     }
     .btn-icon-append {
       margin-left: .5rem;
@@ -63,7 +56,7 @@
 .btn-toolbar {
   .btn-group {
     +.btn-group {
-      @extend .ml-2;
+      @extend .ms-2;
     }
   }
 }
@@ -82,6 +75,7 @@
     @include button-inverse-variant($value);
   }
   .btn-#{$color}:not(.btn-light) {
+    color: $white;
     &:hover,
     &:focus,
     &:active {
@@ -97,8 +91,14 @@
     &:hover,
     &:focus,
     &:active {
-      background: theme-color($color);
-      color: $white;
+      background: theme-gradient-color($color);
+      color: $black;
     }
+  }
+}
+/* gradient buttons */
+@each $color, $value in $theme-gradient-colors {
+  .btn-gradient-#{$color} {
+    @include button-gradient-variant($value);
   }
 }

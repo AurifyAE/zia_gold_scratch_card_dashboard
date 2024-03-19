@@ -49,9 +49,8 @@
           width: 18px;
           height: 18px;
           border-radius: 2px;
-          border: solid $checkbox-border-color;
+          border: solid $primary;
           border-width: 2px;
-          margin-top: 2px;
           @include transition(all);
           transition-duration: 0s;
           -webkit-transition-duration: 250ms;
@@ -73,14 +72,13 @@
           content: '\F12C';
           font-size: .9375rem;
           font-weight: bold;
-          margin-top: 2px;
           color: $white;
         }
       }
       &:checked {
         +.input-helper {
           &:before {
-            background: $checkbox-bg;
+            background: theme-gradient-color(primary);
             border-width: 0;
           }
           &:after {
@@ -124,7 +122,7 @@
             left: auto;
             right: 0;
           }
-          border: solid theme-color(primary);
+          border: solid $primary;
           border-width: 2px;
           width: 20px;
           height: 20px;
@@ -166,7 +164,7 @@
       &:checked {
         +.input-helper {
           &:before {
-            background: theme-color(primary);
+            background: theme-gradient-color(primary);
             border-width: 0;
           }
 
@@ -202,5 +200,35 @@
         }
       }
     }
+  }
+}
+
+@each $color, $value in $theme-gradient-colors {
+  .form-check-#{$color} {
+    &.form-check {
+      label {
+        input[type="checkbox"],
+        input[type="radio"] {
+          +.input-helper {
+            &:before {
+              border-color: theme-color($color);
+            }
+          }
+          &:checked {
+            +.input-helper {
+              &:before {
+                background: $value;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 576px) {
+  .form-inline .form-check {
+
   }
 }

@@ -2,21 +2,13 @@
 
 .table {
   margin-bottom: 0;
-  border-bottom: 1px solid $thead-bg;
 
   thead {
-    border-top: 1px solid $table-bordertop-color;
-    border-bottom: 1px solid $table-bordertop-color;
     th {
       border-top: 0;
       border-bottom-width: 1px;
-      font-family: $type1;
-      font-weight: 500;
-      padding-left: 25px;
-      .rtl & {
-        padding-left: 0;
-        padding-right: 25px;
-      }
+      font-family: $type1-medium;
+      font-weight: initial;
 
       i {
         margin-left: 0.325rem;
@@ -30,11 +22,11 @@
     font-size: $default-font-size;
     line-height: 1;
     white-space: nowrap;
-    padding: 14px 0 14px 25px;
+    padding: $table-cell-padding;
 
     img {
-      width: 30px;
-      height: 29px;
+      width: 36px;
+      height: 36px;
       border-radius: 100%;
     }
 
@@ -53,9 +45,9 @@
     }
   }
 }
-.table-responsive {
-  display: inline-table;
-  @media (max-width: 767px) {
-    display: block;
-  }
+.table > :not(:last-child) > :last-child > *, .jsgrid .jsgrid-table > :not(:last-child) > :last-child > * {
+  border-bottom-color: $border-color;
+}
+.table > :not(:first-child), .jsgrid .jsgrid-table > :not(:first-child) {
+  border-top: none;
 }
