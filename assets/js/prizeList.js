@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function updateTable() {
-    console.log("bbb");
     // Get form values
     var prizeName = document.getElementById("prizeName").value;
     var campaignName = document.getElementById("campaignName").value;
