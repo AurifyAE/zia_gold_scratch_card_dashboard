@@ -6,7 +6,7 @@ import {
     getDocs,
     setDoc,
 } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js";
+// import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js";
 import { app } from '../../config/db.js';
 
 // document.addEventListener('DOMContentLoaded', function () {
@@ -14,7 +14,7 @@ import { app } from '../../config/db.js';
 // });
 
 const firestore = getFirestore(app);
-const auth = getAuth(app);
+// const auth = getAuth(app);
 
 // Attach event listener to the button with ID saveChangesBtn
 document.addEventListener("DOMContentLoaded", function () {
@@ -26,6 +26,41 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+
+// document.getElementById('formDataForm').addEventListener('submit', function (event) {
+//     event.preventDefault();
+
+//     // Get form data
+//     const formData = new FormData(this);
+
+//     // Create a new row in the table
+//     const table = document.getElementById('formDataTable').getElementsByTagName('tbody')[0];
+//     const newRow = table.insertRow(table.rows.length);
+
+//     // Add ID, Date, and Time
+//     const id = table.rows.length;
+//     const date = new Date().toLocaleDateString();
+//     const time = new Date().toLocaleTimeString();
+
+//     // Populate cells with form data
+//     const columns = ['ID', 'FirstName', 'PhoneNumber', 'Email', 'Place', 'Date', 'Time'];
+//     for (const column of columns) {
+//       const cell = newRow.insertCell();
+//       const value = column === 'ID' ? id : formData.get(column);
+//       cell.innerHTML = value || '';
+//     }
+
+//     // Update Date and Time cells
+//     newRow.cells[5].innerHTML = date; // Index 5 corresponds to the 'Date' column
+//     newRow.cells[6].innerHTML = time; // Index 6 corresponds to the 'Time' column
+
+//     // Optionally, you can provide feedback to the user
+//     alert('Form data added successfully!');
+
+//     // Clear form fields
+//     this.reset();
+//   });
 
 async function saveChanges(event) {
     event.preventDefault();
