@@ -548,6 +548,18 @@
       <!-- page-body-wrapper ends -->
     </div>
     <!-- container-scroller -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Check if the user is authenticated
+        const uid = sessionStorage.getItem('uid');
+  
+        if (!uid) {
+          // If not authenticated, redirect to the login page
+          window.location.href = './index.html'; // Change to your login page
+        }
+      });
+    </script>
     <!-- plugins:js -->
     <script src="assets/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->
