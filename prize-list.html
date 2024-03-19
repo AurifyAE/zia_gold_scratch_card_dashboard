@@ -186,7 +186,7 @@
                         <label for="count">Count:</label>
                         <input type="number" class="form-control" id="count" name="count" required>
                       </div>
-                      <button type="button" class="btn btn-primary" onclick="updateTable()">Update Table</button>
+                      <button type="button" class="btn btn-primary" id="updateBtn">Update Table</button>
                     </form>
     
                     <table class="table table-striped">
@@ -236,33 +236,12 @@
     <!-- Custom js for this page -->
     <!-- End custom js for this page -->
     <script>
-      function updateTable() {
-        // Get form values
-        var prizeName = document.getElementById("prizeName").value;
-        var campaignName = document.getElementById("campaignName").value;
-        var count = document.getElementById("count").value;
-        var photo = document.getElementById("photo").files[0];
-  
-        // Generate Prize ID (combination of recurring number and first 4 letters of prize name)
-        var recurringNumber = document.querySelectorAll('#prizeTableBody tr').length + 1;
-        var prizeID = recurringNumber.toString().padStart(3, '0') + prizeName.substring(0, 4).toUpperCase();
-  
-        // Create a new table row
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = `
-          <td>${prizeID}</td>
-          <td class="py-1"><img src="${URL.createObjectURL(photo)}" alt="image" style="max-width: 50px; max-height: 50px;"></td>
-          <td>${prizeName}</td>
-          <td>${campaignName}</td>
-          <td>${count}</td>
-        `;
-  
-        // Append the new row to the table body
-        document.getElementById("prizeTableBody").appendChild(newRow);
-  
-        // Reset form fields
-        document.getElementById("updateForm").reset();
-      }
+      
     </script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js"></script>
+    <script type="module" src="./config/db.js"></script>
+    <script type="module" src="./assets/js/prizeList.js"></script>
   </body>
 </html>

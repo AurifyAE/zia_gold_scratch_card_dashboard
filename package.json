@@ -3,6 +3,7 @@
   "version": "3.0.0",
   "description": "",
   "main": "index.html",
+  "type": "module",
   "dependencies": {
     "@mdi/font": "3.7.95",
     "bootstrap": "^5.1.3",
