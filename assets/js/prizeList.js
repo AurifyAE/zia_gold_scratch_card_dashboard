@@ -23,17 +23,24 @@ const timestamp = serverTimestamp()
 
 // Attach event listener to the button
 document.addEventListener("DOMContentLoaded", function () {
-    const updateBtn = document.getElementById('updateBtn');
+    const saveBtn = document.getElementById('updateBtn');
+    const editBtn = document.getElementById('editBtn');
 
-    if (updateBtn) {
-        updateBtn.addEventListener('click', function () {
-            updateTable();
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function () {
+            saveTable();
+        });
+    }
+
+    if (editBtn) {
+        editBtn.addEventListener('click', function () {
+            editTable();
         });
     }
 });
 
 
-async function updateTable() {
+async function saveTable() {
     // Get form values
     var prizeName = document.getElementById("prizeName").value;
     var campaignName = document.getElementById("campaignName").value;
@@ -111,6 +118,10 @@ async function displayDataInTable() {
                 <td>${data.prizeName}</td>
                 <td>${data.campaignName}</td>
                 <td>${data.count}</td>
+                <td>
+                    <button id="editBtn"><i class="fa-solid fa-pen" id="editBtn"></i></button>
+                    <button id="deleteBtn"><i class="fa-solid fa-trash"></i></button>
+                </td>
             `;
             tableBody.appendChild(newRow);
         });
@@ -119,3 +130,6 @@ async function displayDataInTable() {
     }
 }
 
+function editTable(){
+    console.log('555');
+}
