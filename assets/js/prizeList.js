@@ -24,19 +24,22 @@ const timestamp = serverTimestamp()
 // Attach event listener to the button
 document.addEventListener("DOMContentLoaded", function () {
     const saveBtn = document.getElementById('updateBtn');
-    const editBtn = document.getElementById('editBtn');
 
     if (saveBtn) {
         saveBtn.addEventListener('click', function () {
             saveTable();
         });
     }
+});
 
-    if (editBtn) {
-        editBtn.addEventListener('click', function () {
-            editTable();
-        });
+document.body.addEventListener('click', function (event) {
+    if (event.target.classList.contains('editBtn')) {
+        editTable(event.target);
     }
+
+    // if (event.target.classList.contains('deleteBtn')) {
+    //     editRow(event.target);
+    // }
 });
 
 
@@ -103,12 +106,12 @@ async function displayDataInTable() {
     }
 
     const userDocRef = collection(firestore, `users/${uid}/prizeList`);
-    
+
     try {
         const querySnapshot = await getDocs(query(userDocRef, orderBy('timestamp', 'asc')));
         const tableBody = document.getElementById("prizeTableBody");
         tableBody.innerHTML = ""; // Clear existing rows
-        
+
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const newRow = document.createElement("tr");
@@ -119,8 +122,8 @@ async function displayDataInTable() {
                 <td>${data.campaignName}</td>
                 <td>${data.count}</td>
                 <td>
-                    <button id="editBtn"><i class="fa-solid fa-pen" id="editBtn"></i></button>
-                    <button id="deleteBtn"><i class="fa-solid fa-trash"></i></button>
+                    <button><i class="fa-solid fa-pen editBtn" data-document-id="${doc.id}"></i></button>
+                    <button><i class="fa-solid fa-trash deleteBtn" data-document-id="${doc.id}"></i></button>
                 </td>
             `;
             tableBody.appendChild(newRow);
@@ -130,6 +133,11 @@ async function displayDataInTable() {
     }
 }
 
-function editTable(){
-    console.log('555');
+
+// 
+function editTable(iconElement) {
+    const documentId = iconElement.getAttribute('data-document-id');
+    // console.log(documentId);
+
+    
 }
