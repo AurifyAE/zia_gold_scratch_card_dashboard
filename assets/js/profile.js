@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const firestore = getFirestore(app);
 const storage = getStorage(app);
-const timestamp = serverTimestamp()
+const timestamp = serverTimestamp();
 
 // Attach event listener to the button
 document.addEventListener("DOMContentLoaded", function () {
