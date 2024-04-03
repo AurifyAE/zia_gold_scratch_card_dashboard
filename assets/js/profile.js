@@ -111,6 +111,9 @@ async function displayDataInTable() {
             document.getElementById('displayEmail').textContent = data.email
             document.getElementById('displayPhone').textContent = data.phone
             document.getElementById('displayCity').textContent = data.city
+
+            document.getElementById('profileImage').src = data.photoUrl
+            document.getElementById('profileName').textContent = data.name
         });
     } catch (error) {
         console.error('Error displaying data in table:', error);
