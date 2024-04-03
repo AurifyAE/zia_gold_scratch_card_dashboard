@@ -32,7 +32,7 @@ submitButton.addEventListener("click", function (e) {
             // ...
 
             // Redirect to the dashboard page (change 'dashboard.html' to your actual dashboard page)
-            window.location.href = '../Dashboard.html';
+            window.location.href = './pages/Dashboard.html';
         })
         .catch((error) => {
             const errorCode = error.code;
