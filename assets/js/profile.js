@@ -36,7 +36,7 @@ async function saveProfile() {
     // Get form values
     var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
+    var phone = document.getElementById("phone").value;
     var city = document.getElementById("city").value;
     var photo = document.getElementById("image").files[0]; // Get the file object
 
@@ -58,7 +58,7 @@ async function saveProfile() {
     const dataToSave = {
         name: name,
         email: email,
-        password: password,
+        phone: phone,
         city: city,
         timestamp: timestamp
     };
@@ -109,6 +109,7 @@ async function displayDataInTable() {
             document.getElementById('displayImage').src = data.photoUrl
             document.getElementById('displayName').textContent = data.name
             document.getElementById('displayEmail').textContent = data.email
+            document.getElementById('displayPhone').textContent = data.phone
             document.getElementById('displayCity').textContent = data.city
         });
     } catch (error) {

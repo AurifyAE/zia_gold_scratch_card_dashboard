@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function saveChanges() {
-    console.log("kkooiii");
 
     // Get the edited values
     const firstName = document.getElementById('inputFirstName').value;
