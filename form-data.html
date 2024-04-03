@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="./assets/css/style.css">
   <!-- End layout styles -->
   <link rel="shortcut icon" href="./assets/images/favicon.ico" />
+  <script src="./assets/js/table2excel.js"></script>
 </head>
 
 <body>
@@ -173,7 +174,7 @@
 
           <!-- Add form section with input fields -->
           <!-- <form id="formDataForm" class="row g-3"> -->
-          <div class="row g-3">
+          <!-- <div class="row g-3">
             <div class="col-md-2">
               <label for="inputFirstName" class="form-label">First Name</label>
               <input type="text" class="form-control" id="inputFirstName" name="FirstName"
@@ -193,13 +194,18 @@
               <input type="text" class="form-control" id="inputPlace" name="Place" placeholder="Enter Place">
             </div>
             <div class="col-md-2">
-              <!-- You can add more input fields here as needed -->
+             
             </div>
             <div class="col-md-2">
               <button type="submit" class="btn btn-primary" id="saveChangesBtn">Add Data</button>
             </div>
-          </div>
+          </div> -->
           <!-- </form> -->
+          <div class="row">
+            <button id="downloadExcelBtn"
+              style="width: max-content; padding: 10px; margin-bottom: 15px; margin-left: 20px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">Export
+              to Excel</button>
+          </div>
 
           <div class="row">
             <div class="col-lg-12 grid-margin stretch-card">
@@ -214,6 +220,7 @@
                         <th>Phone Number</th>
                         <th>Email</th>
                         <th>Place</th>
+                        <th>Winner ID</th>
                         <th>Date</th>
                         <th>Time</th>
                       </tr>
@@ -259,9 +266,14 @@
   <!-- endinject -->
   <!-- Custom js for this page -->
   <!-- End custom js for this page -->
- 
+  <script> //downloadExcelBtn
+    document.getElementById('downloadExcelBtn').addEventListener('click', function () {
+      var table2excel = new Table2Excel();
+      table2excel.export(document.querySelectorAll("#formDataTable"));
+    })
+  </script>
 
-  
+
 </body>
 
 </html>
