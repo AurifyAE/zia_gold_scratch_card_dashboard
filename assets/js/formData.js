@@ -94,6 +94,7 @@ async function displayDataInTable() {
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            console.log(data);
             // Assuming timestampObj is your Firebase Timestamp object
             var timestampObj = data.timestamp;
 
