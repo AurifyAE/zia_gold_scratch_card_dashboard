@@ -115,6 +115,7 @@ async function displayDataInTable() {
                 <td>${data.phoneNumber}</td>
                 <td>${data.email}</td>
                 <td>${data.place}</td>
+                <td>${data.prizeID}</td>
                 <td>${data.winID}</td>
                 <td>${date}</td>
                 <td>${time}</td>
