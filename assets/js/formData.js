@@ -139,7 +139,3 @@ async function displayDataInTable() {
         console.error('Error displaying data in table:', error);
     }
 }
-
-
-
-
