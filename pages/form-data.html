@@ -19,6 +19,12 @@
   <!-- End layout styles -->
   <link rel="shortcut icon" href="../assets/images/favicon.ico" />
   <script src="../assets/js/table2excel.js"></script>
+
+  <style>
+    .table-responsive {
+      overflow-x: auto;
+    }
+  </style>
 </head>
 
 <body>
@@ -208,28 +214,21 @@
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Bordered table</h4>
-                  <table id="formDataTable" class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>ID</th>
-                        <th>First name</th>
-                        <th>Phone Number</th>
-                        <th>Email</th>
-                        <th>Place</th>
-                        <th>Prize ID</th>
-                        <th>Winner ID</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                      </tr>
-                    </thead>
-                    <tbody id="dataTBody">
-
-                    </tbody>
-                  </table>
+                  <div class="table-responsive">
+                    <table id="formDataTable" class="table table-bordered">
+                      <thead id="dataTHead">
+                        <!-- Table header content -->
+                      </thead>
+                      <tbody id="dataTBody">
+                        <!-- Table body content -->
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
         <!-- content-wrapper ends -->
         <!-- partial:./partials/_footer.html -->

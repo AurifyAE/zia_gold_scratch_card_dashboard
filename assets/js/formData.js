@@ -78,7 +78,7 @@ async function saveChanges() {
 
 async function displayDataInTable() {
     const uid = sessionStorage.getItem('uid');
-    let count = 0
+    let count = 0;
 
     if (!uid) {
         console.error('User not authenticated');
@@ -88,38 +88,50 @@ async function displayDataInTable() {
     const userDocRef = collection(firestore, `users/${uid}/table`);
 
     try {
-        const querySnapshot = await getDocs(query(userDocRef, orderBy('timestamp', 'asc')));
+        const querySnapshot = await getDocs(query(userDocRef, orderBy('date', 'asc')));
         const tableBody = document.getElementById("dataTBody");
+        const tableHeader = document.getElementById("dataTHead");
         tableBody.innerHTML = ""; // Clear existing rows
+        tableHeader.innerHTML = ""; // Clear existing header
+
+        // Define the custom order of field names
+        const fixedFields = ['firstName', 'email', 'phoneNumber', 'place'];
+        const remainingFields = [];
+
+        let headerRow = document.createElement("tr");
+        headerRow.innerHTML = `<th>#</th>`; // Add a column for counting
+
+        // Add the fixed fields to the header row
+        fixedFields.forEach(fieldName => {
+            headerRow.innerHTML += `<th>${fieldName}</th>`; // Add field name as header
+        });
+
+        // Extract remaining field names and add them to the header row
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            Object.keys(data).forEach(fieldName => {
+                if (!fixedFields.includes(fieldName) && !remainingFields.includes(fieldName)) {
+                    remainingFields.push(fieldName);
+                    headerRow.innerHTML += `<th>${fieldName}</th>`; // Add field name as header
+                }
+            });
+            // Stop iterating after processing the first document
+            return;
+        });
+
+        tableHeader.appendChild(headerRow);
 
         querySnapshot.forEach((doc) => {
             const data = doc.data();
-            // console.log(data);
-            // Assuming timestampObj is your Firebase Timestamp object
-            var timestampObj = data.timestamp;
-
-            // Convert timestamp to milliseconds
-            var milliseconds = (timestampObj.seconds * 1000) + (timestampObj.nanoseconds / 1000000);
-
-            // Create a new Date object
-            var dateObj = new Date(milliseconds);
-
-            // Extract date and time components
-            var date = dateObj.toLocaleDateString();
-            var time = dateObj.toLocaleTimeString();
+            const date = data.date;
+            const time = data.time;
 
             const newRow = document.createElement("tr");
-            count = count + 1
+            count++;
             newRow.innerHTML = `
                 <td>${count}</td>
-                <td>${data.firstName}</td>
-                <td>${data.phoneNumber}</td>
-                <td>${data.email}</td>
-                <td>${data.place}</td>
-                <td>${data.prizeID}</td>
-                <td>${data.winID}</td>
-                <td>${date}</td>
-                <td>${time}</td>
+                ${fixedFields.map(fieldName => `<td>${data[fieldName]}</td>`).join('')}
+                ${remainingFields.map(fieldName => `<td>${data[fieldName]}</td>`).join('')}
             `;
             tableBody.appendChild(newRow);
         });
@@ -127,3 +139,7 @@ async function displayDataInTable() {
         console.error('Error displaying data in table:', error);
     }
 }
+
+
+
+
