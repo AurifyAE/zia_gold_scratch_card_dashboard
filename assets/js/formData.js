@@ -88,14 +88,14 @@ async function displayDataInTable() {
     const userDocRef = collection(firestore, `users/${uid}/table`);
 
     try {
-        const querySnapshot = await getDocs(query(userDocRef, orderBy('date', 'asc')));
+        const querySnapshot = await getDocs(query(userDocRef, orderBy('timestamp', 'asc')));
         const tableBody = document.getElementById("dataTBody");
         const tableHeader = document.getElementById("dataTHead");
         tableBody.innerHTML = ""; // Clear existing rows
         tableHeader.innerHTML = ""; // Clear existing header
 
         // Define the custom order of field names
-        const fixedFields = ['firstName', 'email', 'phoneNumber', 'place'];
+        const fixedFields = ['firstName', 'email', 'phoneNumber'];
         const remainingFields = [];
 
         let headerRow = document.createElement("tr");
@@ -110,7 +110,7 @@ async function displayDataInTable() {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             Object.keys(data).forEach(fieldName => {
-                if (!fixedFields.includes(fieldName) && !remainingFields.includes(fieldName)) {
+                if (!fixedFields.includes(fieldName) && !remainingFields.includes(fieldName) && fieldName !== 'timestamp' && fieldName !== 'date' && fieldName !== 'time') {
                     remainingFields.push(fieldName);
                     headerRow.innerHTML += `<th>${fieldName}</th>`; // Add field name as header
                 }
@@ -132,6 +132,8 @@ async function displayDataInTable() {
                 <td>${count}</td>
                 ${fixedFields.map(fieldName => `<td>${data[fieldName]}</td>`).join('')}
                 ${remainingFields.map(fieldName => `<td>${data[fieldName]}</td>`).join('')}
+                <td>${date}</td>
+                <td>${time}</td>
             `;
             tableBody.appendChild(newRow);
         });
