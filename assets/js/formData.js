@@ -141,3 +141,35 @@ async function displayDataInTable() {
         console.error('Error displaying data in table:', error);
     }
 }
+
+// Search Function
+// $(document).ready(function () {
+//     $("#searchInput").on("keyup", function () {
+//         var value = $(this).val().toLowerCase();
+//         $("#formDataTable tr").filter(function () {
+//             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+//         });
+//     });
+// });
+
+
+// Search Function
+$(document).ready(function () {
+    $('#searchInput').on('keyup', function () {
+        var value = $(this).val().toLowerCase();
+        $('#formDataTable tr:gt(0)').each(function () { // Start from index 1 to skip the header row
+            var found = false;
+            $(this).find('td').each(function () {
+                if ($(this).text().toLowerCase().indexOf(value) > -1) {
+                    found = true;
+                    return false; // Break the loop if found
+                }
+            });
+            if (found) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+});
