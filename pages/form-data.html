@@ -25,7 +25,7 @@
       overflow-x: auto;
     }
 
-    .search-input{
+    .search-input {
       padding: 8px;
       margin-bottom: 20px;
       width: 250px;
@@ -184,7 +184,13 @@
               style="width: max-content; padding: 10px; margin-bottom: 15px; margin-left: 20px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">Export
               to Excel</button>
           </div>
-          <input type="text" class="form-control search-input" id="searchInput" placeholder="Search...">
+          <div style="display: flex; flex-direction: row; justify-content: space-between;">
+            <input type="text" class="form-control search-input" id="searchInput" placeholder="Search...">
+            <button id="saveChanges"
+              style="display: none; width: max-content; padding: 10px; border: 0; color: #fff; background-color: #b66dff; border-radius: 7px; height: max-content;">
+              Mark Claimed
+            </button>
+          </div>
           <!-- Add form section with input fields -->
           <!-- <form id="formDataForm" class="row g-3"> -->
           <!-- <div class="row g-3">
@@ -214,12 +220,18 @@
             </div>
           </div> -->
           <!-- </form> -->
-
           <div class="row">
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Bordered table</h4>
+                  <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                    <h4 class="card-title">Data Table</h4>
+                    <select id="statusFilter" class="form-control" style="width: max-content; margin-bottom: 10px;">
+                      <option value="all">View All</option>
+                      <option value="Claimed">Claimed</option>
+                      <option value="Not Claimed">Not Claimed</option>
+                    </select>
+                  </div>
                   <div class="table-responsive">
                     <table id="formDataTable" class="table table-bordered">
                       <thead id="dataTHead">

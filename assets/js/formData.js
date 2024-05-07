@@ -5,6 +5,8 @@ import {
     doc,
     getDocs,
     setDoc,
+    updateDoc,
+    writeBatch,
     serverTimestamp,
     query,
     orderBy
@@ -16,9 +18,15 @@ document.addEventListener('DOMContentLoaded', function () {
     displayDataInTable()
 });
 
+
+const selectedIds = [];
+
 const firestore = getFirestore(app);
 const timestamp = serverTimestamp()
 // const auth = getAuth(app);
+
+
+const saveBtn = document.getElementById('saveChanges');
 
 // Attach event listener to the button with ID saveChangesBtn
 document.addEventListener("DOMContentLoaded", function () {
@@ -31,6 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// Event listener for save button click
+saveBtn.addEventListener('click', () => {
+    updateTable(selectedIds); // Update the table with selected IDs
+});
 
 async function saveChanges() {
 
@@ -78,7 +90,6 @@ async function saveChanges() {
 
 async function displayDataInTable() {
     const uid = sessionStorage.getItem('uid');
-    let count = 0;
 
     if (!uid) {
         console.error('User not authenticated');
@@ -95,11 +106,15 @@ async function displayDataInTable() {
         tableHeader.innerHTML = ""; // Clear existing header
 
         // Define the custom order of field names
-        const fixedFields = ['firstName', 'email', 'phoneNumber'];
+        const fixedFields = ['firstName', 'email', 'phoneNumber', 'winID', 'prizeName', 'status'];
         const remainingFields = [];
+        let count = 0;
 
         let headerRow = document.createElement("tr");
         headerRow.innerHTML = `<th>#</th>`; // Add a column for counting
+
+        // Add the serial number column
+        headerRow.innerHTML += `<th>SL No</th>`;
 
         // Add the fixed fields to the header row
         fixedFields.forEach(fieldName => {
@@ -119,28 +134,120 @@ async function displayDataInTable() {
             return;
         });
 
+        // Add headers for date and time
+        headerRow.innerHTML += `<th>Date</th><th>Time</th>`;
+
+        // Add header row to the table
         tableHeader.appendChild(headerRow);
 
-        querySnapshot.forEach((doc) => {
+        // Iterate through each document in the query snapshot
+        querySnapshot.forEach((doc, index) => {
             const data = doc.data();
             const date = data.date;
             const time = data.time;
 
+            // Create a new row for the table
             const newRow = document.createElement("tr");
+
+            // Add a checkbox in the first column
+            const checkboxCell = document.createElement("td");
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "selectRow";
+            checkbox.id = doc.id;
+            checkboxCell.appendChild(checkbox);
+            newRow.appendChild(checkboxCell);
+
+            // Increment count for each row
             count++;
-            newRow.innerHTML = `
-                <td>${count}</td>
-                ${fixedFields.map(fieldName => `<td>${data[fieldName]}</td>`).join('')}
-                ${remainingFields.map(fieldName => `<td>${data[fieldName]}</td>`).join('')}
-                <td>${date}</td>
-                <td>${time}</td>
-            `;
+
+            // Add serial number to the row
+            const serialNumberCell = document.createElement("td");
+            serialNumberCell.textContent = count;
+            newRow.appendChild(serialNumberCell);
+
+            // Add fixed fields to the row
+            fixedFields.forEach(fieldName => {
+                const cell = document.createElement("td");
+                cell.textContent = data[fieldName];
+                newRow.appendChild(cell);
+            });
+
+            // Add remaining fields to the row
+            remainingFields.forEach(fieldName => {
+                const cell = document.createElement("td");
+                cell.textContent = data[fieldName];
+                newRow.appendChild(cell);
+            });
+
+            // Add date and time to the row
+            newRow.innerHTML += `<td>${date}</td><td>${time}</td>`;
+
+            // Append the new row to the table body
             tableBody.appendChild(newRow);
+
+
+            // Event listener for checkbox changes
+            document.querySelectorAll('.selectRow').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const isChecked = checkbox.checked; // Check if the checkbox is selected
+                    const id = checkbox.id;
+
+                    if (isChecked) {
+                        saveBtn.style.display = 'block';
+                        // Add the ID to the list of selected IDs if it's not already there
+                        if (!selectedIds.includes(id)) {
+                            selectedIds.push(id);
+                            console.log('Row selected:', id); // Log the content of the selected row
+                        }
+                    } else {
+                        // Remove the ID from the list of selected IDs
+                        const index = selectedIds.indexOf(id);
+                        if (index !== -1) {
+                            selectedIds.splice(index, 1);
+                            console.log('Row deselected:', id); // Log the content of the deselected row
+                        }
+                    }
+
+                    // Hide save button if no rows are selected
+                    if (selectedIds.length === 0) {
+                        saveBtn.style.display = 'none';
+                    }
+                });
+            });
         });
     } catch (error) {
         console.error('Error displaying data in table:', error);
     }
 }
+
+async function updateTable(ids) {
+    const uid = sessionStorage.getItem('uid');
+
+    if (!uid) {
+        console.error('User not authenticated');
+        return;
+    }
+
+    const batch = writeBatch(firestore);
+    const tableRef = collection(firestore, `users/${uid}/table`);
+
+    ids.forEach(id => {
+        const docRef = doc(tableRef, id);
+        batch.update(docRef, { status: 'Claimed' });
+    });
+
+    try {
+        await batch.commit();
+        console.log('Documents updated successfully.');
+        saveBtn.style.display = 'none';
+        displayDataInTable()
+    } catch (error) {
+        console.error('Error updating documents:', error);
+    }
+}
+
+
 
 // Search Function
 // $(document).ready(function () {
@@ -172,4 +279,58 @@ $(document).ready(function () {
             }
         });
     });
+});
+
+// 
+// $(document).ready(function () {
+//     $('#searchInput').on('keyup', function () {
+//         filterTable();
+//     });
+
+//     $('#statusFilter').on('change', function () {
+//         filterTable();
+//     });
+// });
+
+// function filterTable() {
+//     var statusFilter = $('#statusFilter').val();
+
+//     $('#formDataTable tr:gt(0)').each(function () {
+//         var row = $(this);
+//         var status = row.find('td').text().trim();
+
+//         // Show or hide the row based on whether the status matches the selected value
+//         if (statusFilter === 'all' || status === statusFilter) {
+//             row.show();
+//         } else {
+//             row.hide();
+//         }
+//     });
+// }
+
+document.getElementById("statusFilter").addEventListener("change", function () {
+    var filter = this.value;
+    var rows = document.getElementById("formDataTable").getElementsByTagName("tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var status = rows[i].getElementsByTagName("td")[7]; // Assuming status cell is at index 7
+        console.log(status);
+        if (status !== undefined) {
+            if (filter === "all") {
+                rows[i].style.display = "";
+            } else if (filter === "Claimed") {
+                if (status.textContent.trim() === "Claimed") {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            } else if (filter === "Not Claimed") {
+                if (status.textContent.trim() === "") {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    }
 });
