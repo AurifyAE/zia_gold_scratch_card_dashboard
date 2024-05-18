@@ -38,7 +38,7 @@ async function saveProfile() {
     var email = document.getElementById("email").value;
     var phone = document.getElementById("phone").value;
     var city = document.getElementById("city").value;
-    var photo = document.getElementById("image").files[0]; // Get the file object
+    // var photo = document.getElementById("image").files[0]; // Get the file object
 
     // Get the UID of the authenticated user
     const uid = sessionStorage.getItem('uid');
@@ -49,10 +49,10 @@ async function saveProfile() {
     }
 
     // Check if a file is selected and it's an image
-    if (!photo || !photo.type.startsWith('image/')) {
-        console.error('Please select an image file');
-        return;
-    }
+    // if (!photo || !photo.type.startsWith('image/')) {
+    //     console.error('Please select an image file');
+    //     return;
+    // }
 
     // Create an object with the data to be saved
     const dataToSave = {
@@ -64,19 +64,19 @@ async function saveProfile() {
     };
 
     // Reference to the user's storage and Firestore documents
-    const storageRef = ref(storage, `users/${uid}/profile/${photo.name}`);
+    // const storageRef = ref(storage, `users/${uid}/profile/${photo.name}`);
     const userDocRef = doc(firestore, `users/${uid}/profile`, 'profileData');
 
     try {
         // Upload the image to Firebase Storage
-        const snapshot = await uploadBytes(storageRef, photo);
-        console.log('Uploaded a blob or file!', snapshot);
+        // const snapshot = await uploadBytes(storageRef, photo);
+        // console.log('Uploaded a blob or file!', snapshot);
 
         // Get the download URL of the uploaded image
-        const imageUrl = await getDownloadURL(snapshot.ref);
+        // const imageUrl = await getDownloadURL(snapshot.ref);
 
         // Add the image URL along with other data to Firestore
-        await setDoc(userDocRef, { ...dataToSave, photoUrl: imageUrl });
+        await setDoc(userDocRef, { ...dataToSave, photoUrl: '' });
         console.log('Data successfully added to Firestore');
         displayDataInTable()
         reset()
