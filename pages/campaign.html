@@ -19,9 +19,13 @@
     <!-- End layout styles -->
     <link rel="shortcut icon" href="../assets/images/favicon.ico" />
     <script src="https://kit.fontawesome.com/0e1fa7c1a3.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="../DataTables/datatables.css" />
     <script src="../assets/js/table2excel.js"></script>
     <script src="https://sheetjs.com/sheetjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
     <style>
         #profilePreview img {
             max-width: 100%;
@@ -31,6 +35,43 @@
             margin-top: 10px;
             /* Add some spacing */
         }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .table-container {
+            max-height: 400px;
+            /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+
+        .material-symbols-outlined {
+            color: red;
+            font-size: 35px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .material-symbols-outlined:hover {
+            border: 1px solid red;
+        }
+
+        /* #qr-code {
+            display: none;
+        } */
+
+        .file-button::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+
+        /* .file-button {
+            -webkit-user-select: none;
+        } */
+    </style>
     </style>
 </head>
 
@@ -190,24 +231,26 @@
             <!-- partial -->
             <div class="main-panel">
                 <div class="content-wrapper">
-                    <div class="page-header">
-                        <h3 class="page-title"> Campaign </h3>
+                    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                        <div class="page-header">
+                            <h3 class="page-title"> Campaign </h3>
+                        </div>
                     </div>
                     <div class="row">
                         <div style="display: flex; flex-direction: row; justify-content: space-between;">
                             <button id="handleRetrieveData"
-                                style="width: max-content; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
+                                style="display: none; width: max-content; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
                                 Retrieve Data
                             </button>
                             <div style="display: flex; flex-direction: row;">
                                 <input type="file" id="fileInput" accept=".xlsx, .xls" style="display: none;">
                                 <button id="handleImportData"
-                                    style="display: none; width: max-content; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
+                                    style="width: max-content; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
                                     Import from Excel
                                 </button>
-                                <button id="handleExportData"
-                                    style="display: none; width: max-content; padding: 10px; margin-left: 20px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
-                                    Export to Excel
+                                <button id="handleSendMessage"
+                                    style="display: none; width: max-content; padding: 10px; margin-left: 25px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
+                                    Send Message
                                 </button>
                             </div>
                         </div>
@@ -223,6 +266,84 @@
 
                             </tbody>
                         </table>
+                    </div>
+                </div>
+
+                <div class="modal hide fade in bd-example-modal-lg" tabindex="-1" role="dialog" id="myModal"
+                    data-keyboard="false" data-bs-backdrop='static' aria-labelledby="myLargeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div
+                                style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                                <span>Whatsapp Message Sender</span>
+                                <span class="material-symbols-outlined" id="handleModalClose">
+                                    close
+                                </span>
+                            </div>
+                            <div
+                                style="display: flex; flex-direction: row; justify-content: space-between; border-top: 1px solid grey; padding: 25px 0px 0px 0px;">
+                                <div class="col-md-4"
+                                    style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 15px; border-radius: 10px;">
+                                    <p style="font-weight: 600;">Contacts</p>
+                                    <div class="table-container">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Number</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tableBody">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 15px; border-radius: 10px;"
+                                    class="col-md-4">
+                                    <p>Message</p>
+                                    <div>
+                                        <textarea name="" id="message" rows="10" style="width: 100%;"></textarea>
+                                    </div>
+                                    <button id="handleSubmitButton"
+                                        style="width: max-content; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
+                                        Start Campaign
+                                    </button>
+                                </div>
+                                <div class="col-md-3"
+                                    style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); padding: 15px; border-radius: 10px;">
+                                    <p>Attachments</p>
+                                    <input id="file-input" type="file" class="file-button"
+                                    style="width: 100%; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px; cursor: pointer;">
+
+                                    <div id="qr-code" class="mt-5">
+                                        <h5>Scan the QR Code</h5>
+                                        <img id="qr-img" src="" style="width: 140px; height: 140px;">
+                                        <button id="handleConnectServer"
+                                            style="width: max-content; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
+                                            Connect Server
+                                        </button>
+                                        <button id="handleDisconnectServer"
+                                            style="width: max-content; padding: 10px; margin-bottom: 15px; border: 0; color: #fff; background-color: #b66dff; border-radius: 10px;">
+                                            Disconnect Server
+                                        </button>
+                                    </div>
+                                    <!-- <div id="app">
+                                        <form id="message-form">
+                                            <input type="text" id="phone-numbers" placeholder="Enter phone numbers, comma-separated"><br>
+                                            <textarea id="message" placeholder="Enter your message here"></textarea><br>
+                                            <input type="file" id="file"><br>
+                                            <button type="submit">Send Message</button>
+                                        </form>
+                                        <div id="status"></div>
+                                    </div> -->
+                                    <div id="status"></div>
+                                    <div id="messages"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- content-wrapper ends -->
