@@ -31,6 +31,7 @@ document.getElementById('tableHead').style.display = 'none';
 // messageBox
 // handleConnectServer
 // handleDisconnectServer
+// handleDownloadTemplate
 
 
 // Handler for Send Message Button, Open Modal
@@ -91,6 +92,28 @@ document.getElementById('handleDisconnectServer').addEventListener('click', () =
 fileInputButton.addEventListener('click', async () => {
     fileInput.click();  // Triggers click event on the hidden file input
 });
+
+// Handle Download Template
+document.getElementById('handleDownloadTemplate').addEventListener('click', () => {
+    // File URL
+    const fileUrl = '../assets/file/Template.xlsx'; // Replace with your file URL
+
+    // Create a new anchor element to trigger the download
+    const link = document.createElement('a');
+    link.href = fileUrl;
+
+    // Set the download attribute with the desired file name
+    link.setAttribute('download', 'Template.xlsx'); // Replace with your desired file name
+
+    // Append the anchor element to the body
+    document.body.appendChild(link);
+
+    // Trigger the click event to download the file
+    link.click();
+
+    // Clean up: remove the anchor element from the body
+    document.body.removeChild(link);
+})
 
 // File Import Button Event Handler
 fileInput.addEventListener('change', async (event) => {
