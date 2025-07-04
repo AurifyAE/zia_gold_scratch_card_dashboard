@@ -111,7 +111,7 @@ async function displayDataInTable() {
         tableHeader.innerHTML = ""; // Clear existing header
 
         // Define the custom order of field names
-        const fixedFields = ['firstName', 'email', 'phoneNumber', 'winID', 'prizeName', 'status', 'action'];
+        const fixedFields = ['firstName', 'email', 'phoneNumber', 'winID', 'prizeName', 'status'];
         const remainingFields = [];
         let count = 0;
 
