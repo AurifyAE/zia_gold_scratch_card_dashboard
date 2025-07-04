@@ -55,6 +55,8 @@ async function saveChanges() {
     // Get the UID of the authenticated user
     const uid = sessionStorage.getItem('uid');
 
+    console.log('UID:', uid); // Log the UID for debugging
+
     if (!uid) {
         console.error('User not authenticated');
         return Promise.reject('User not authenticated');
@@ -98,6 +100,8 @@ async function displayDataInTable() {
 
     const userDocRef = collection(firestore, `users/${uid}/table`);
 
+    console.log('Querying path:', `users/${uid}/table`);
+
     try {
         const querySnapshot = await getDocs(query(userDocRef, orderBy('timestamp', 'asc')));
         const tableBody = document.getElementById("dataTBody");
@@ -111,14 +115,9 @@ async function displayDataInTable() {
         let count = 0;
 
         let headerRow = document.createElement("tr");
-        headerRow.innerHTML = `<th>#</th>`; // Add a column for counting
-
-        // Add the serial number column
-        headerRow.innerHTML += `<th>SL No</th>`;
-
-        // Add the fixed fields to the header row
+        headerRow.innerHTML = `<th>#</th><th>SL No</th>`;
         fixedFields.forEach(fieldName => {
-            headerRow.innerHTML += `<th>${fieldName}</th>`; // Add field name as header
+            headerRow.innerHTML += `<th>${fieldName}</th>`;
         });
 
         // Extract remaining field names and add them to the header row
@@ -127,29 +126,26 @@ async function displayDataInTable() {
             Object.keys(data).forEach(fieldName => {
                 if (!fixedFields.includes(fieldName) && !remainingFields.includes(fieldName) && fieldName !== 'timestamp' && fieldName !== 'date' && fieldName !== 'time') {
                     remainingFields.push(fieldName);
-                    headerRow.innerHTML += `<th>${fieldName}</th>`; // Add field name as header
+                    headerRow.innerHTML += `<th>${fieldName}</th>`;
                 }
             });
-            // Stop iterating after processing the first document
             return;
         });
 
-        // Add headers for date and time
         headerRow.innerHTML += `<th>Date</th><th>Time</th>`;
-
-        // Add header row to the table
         tableHeader.appendChild(headerRow);
 
         // Iterate through each document in the query snapshot
         querySnapshot.forEach((doc, index) => {
             const data = doc.data();
-            const date = data.date;
-            const time = data.time;
+            const date = data.date || "";
+            const time = data.time || "";
 
-            // Create a new row for the table
+            console.log(`Row ${index + 1}:`, data); // Log each row's data
+
             const newRow = document.createElement("tr");
 
-            // Add a checkbox in the first column
+            // Checkbox
             const checkboxCell = document.createElement("td");
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -158,64 +154,68 @@ async function displayDataInTable() {
             checkboxCell.appendChild(checkbox);
             newRow.appendChild(checkboxCell);
 
-            // Increment count for each row
+            // Serial number
             count++;
-
-            // Add serial number to the row
             const serialNumberCell = document.createElement("td");
             serialNumberCell.textContent = count;
             newRow.appendChild(serialNumberCell);
 
-            // Add fixed fields to the row
+            // Fixed fields
             fixedFields.forEach(fieldName => {
                 const cell = document.createElement("td");
-                cell.textContent = data[fieldName];
+                cell.textContent = data[fieldName] || "";
                 newRow.appendChild(cell);
             });
 
-            // Add remaining fields to the row
+            // Remaining fields
             remainingFields.forEach(fieldName => {
                 const cell = document.createElement("td");
-                cell.textContent = data[fieldName];
+                cell.textContent = data[fieldName] || "";
                 newRow.appendChild(cell);
             });
 
-            // Add date and time to the row
-            newRow.innerHTML += `<td>${date}</td><td>${time}</td>`;
+            // Date and Time
+            const dateCell = document.createElement("td");
+            dateCell.textContent = date;
+            newRow.appendChild(dateCell);
 
-            // Append the new row to the table body
+            const timeCell = document.createElement("td");
+            timeCell.textContent = time;
+            newRow.appendChild(timeCell);
+
             tableBody.appendChild(newRow);
 
+            // Checkbox event listener (add only once per row)
+            checkbox.addEventListener('change', () => {
+                const isChecked = checkbox.checked;
+                const id = checkbox.id;
 
-            // Event listener for checkbox changes
-            document.querySelectorAll('.selectRow').forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    const isChecked = checkbox.checked; // Check if the checkbox is selected
-                    const id = checkbox.id;
-
-                    if (isChecked) {
-                        saveBtn.style.display = 'block';
-                        // Add the ID to the list of selected IDs if it's not already there
-                        if (!selectedIds.includes(id)) {
-                            selectedIds.push(id);
-                            console.log('Row selected:', id); // Log the content of the selected row
-                        }
-                    } else {
-                        // Remove the ID from the list of selected IDs
-                        const index = selectedIds.indexOf(id);
-                        if (index !== -1) {
-                            selectedIds.splice(index, 1);
-                            console.log('Row deselected:', id); // Log the content of the deselected row
-                        }
+                if (isChecked) {
+                    saveBtn.style.display = 'block';
+                    if (!selectedIds.includes(id)) {
+                        selectedIds.push(id);
+                        console.log('Row selected:', id);
                     }
-
-                    // Hide save button if no rows are selected
-                    if (selectedIds.length === 0) {
-                        saveBtn.style.display = 'none';
+                } else {
+                    const index = selectedIds.indexOf(id);
+                    if (index !== -1) {
+                        selectedIds.splice(index, 1);
+                        console.log('Row deselected:', id);
                     }
-                });
+                }
+                if (selectedIds.length === 0) {
+                    saveBtn.style.display = 'none';
+                }
             });
+
+            // Log the final row HTML for debugging
+            console.log('Appended row:', newRow.outerHTML);
         });
+
+        // Log if no data found
+        if (querySnapshot.size === 0) {
+            console.log('No data found for this user.');
+        }
     } catch (error) {
         console.error('Error displaying data in table:', error);
     }

@@ -52,7 +52,7 @@ const firestore = getFirestore(app);
 const auth = getAuth(app);
 
 async function displayDataInTable() {
-    const uid = sessionStorage.getItem('uid');
+    const uid = "uuNv99eSw2htMxgCeRrHqKwnX8h2";
 
     if (!uid) {
         console.error('User not authenticated');
