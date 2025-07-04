@@ -9,7 +9,8 @@ import {
     writeBatch,
     serverTimestamp,
     query,
-    orderBy
+    orderBy,
+    deleteDoc
 } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore.js";
 // import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-auth.js";
 import { app } from '../../config/db.js';
@@ -110,7 +111,7 @@ async function displayDataInTable() {
         tableHeader.innerHTML = ""; // Clear existing header
 
         // Define the custom order of field names
-        const fixedFields = ['firstName', 'email', 'phoneNumber', 'winID', 'prizeName', 'status'];
+        const fixedFields = ['firstName', 'email', 'phoneNumber', 'winID', 'prizeName', 'status', 'action'];
         const remainingFields = [];
         let count = 0;
 
@@ -141,8 +142,6 @@ async function displayDataInTable() {
             const date = data.date || "";
             const time = data.time || "";
 
-            console.log(`Row ${index + 1}:`, data); // Log each row's data
-
             const newRow = document.createElement("tr");
 
             // Checkbox
@@ -160,11 +159,13 @@ async function displayDataInTable() {
             serialNumberCell.textContent = count;
             newRow.appendChild(serialNumberCell);
 
-            // Fixed fields
+            // Fixed fields except 'action'
             fixedFields.forEach(fieldName => {
-                const cell = document.createElement("td");
-                cell.textContent = data[fieldName] || "";
-                newRow.appendChild(cell);
+                if (fieldName !== 'action') {
+                    const cell = document.createElement("td");
+                    cell.textContent = data[fieldName] || "";
+                    newRow.appendChild(cell);
+                }
             });
 
             // Remaining fields
@@ -182,6 +183,25 @@ async function displayDataInTable() {
             const timeCell = document.createElement("td");
             timeCell.textContent = time;
             newRow.appendChild(timeCell);
+
+            // Action cell (Delete button)
+            const actionCell = document.createElement("td");
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.className = "delete-btn";
+            deleteBtn.addEventListener("click", async () => {
+                if (confirm("Are you sure you want to delete this entry?")) {
+                    try {
+                        await deleteDoc(doc.ref);
+                        newRow.remove();
+                        console.log("Document deleted:", doc.id);
+                    } catch (err) {
+                        console.error("Error deleting document:", err);
+                    }
+                }
+            });
+            actionCell.appendChild(deleteBtn);
+            newRow.appendChild(actionCell);
 
             tableBody.appendChild(newRow);
 
